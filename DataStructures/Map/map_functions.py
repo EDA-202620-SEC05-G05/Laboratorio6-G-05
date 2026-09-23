@@ -1,8 +1,12 @@
 import math
+from DataStructures.List import array_list as lt
+from DataStructures.Map import map_entry as me
 
 """
     Funciones auxiliares para el manejo de tablas de simbolos (**mapas**)
 """
+#centinela diferente de None para identificar si se debe seguir o no se debe seguir 
+AVAILABLE = "##AVAILABLE##" 
 
 
 def is_prime(n):
@@ -82,3 +86,15 @@ def hash_value(table, key):
 
     value = int((abs(a * h + b) % p) % m)
     return value
+
+def is_available(table, pos):
+    entry = lt.get_element(table, pos)
+    key = me.get_key(entry)
+    return key is None or key == AVAILABLE
+ 
+ 
+def default_compare(key, entry):
+    entry_key = me.get_key(entry)
+    if key == entry_key:
+        return 0
+    return 1
