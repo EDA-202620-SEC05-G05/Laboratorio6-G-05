@@ -90,50 +90,35 @@ def rehash(my_map):
  
     return my_map
 
+def remove(my_map, key):
+    hash_value = mf.hash_value(my_map, key)
+    ocupied, pos = find_slot(my_map, key, hash_value)
+ 
+    if not ocupied:
+        return None
+ 
+    entry = lt.get_element(my_map["table"], pos)
+    value = me.get_value(entry)
+ 
+    empty_entry = me.new_map_entry(mf.AVAILABLE, None)
+    lt.change_info(my_map["table"], pos, empty_entry)
+ 
+    my_map["size"] -= 1
+    my_map["current_factor"] = my_map["size"] / my_map["capacity"]
+ 
+    return value
+
 
 def get(my_map, key):
-   """
-   Retorna el valor asociado a la llave ``key`` en el mapa.
-
-   :param my_map: Mapa del cual se desea obtener el valor.
-   :type my_map: :ref:`map<map>`
-   :param key: Llave de la cual se desea obtener el valor.
-   :type key: any
-
-   :return: Valor asociado a la llave ``key`` en el mapa.
-   :rtype: any
-   """
-   hash_value = mf.hash_value(my_map, key)
-   ocupied, slot = find_slot(my_map, key, hash_value)
-   if ocupied:
-      entry = lt.get_element(my_map["table"], slot)
-      return me.get_value(entry)
-   else:
-      return None
-
-def remove(my_map, key):
-   """
-   Elimina la entrada asociada a la llave ``key`` en el mapa.
-
-   :param my_map: Mapa del cual se desea eliminar la entrada.
-   :type my_map: :ref:`map<map>`
-   :param key: Llave de la entrada que se desea eliminar.
-   :type key: any
-
-   :return: Valor asociado a la llave ``key`` en el mapa antes de ser eliminada.
-   :rtype: any
-   """
-   hash_value = mf.hash_value(my_map, key)
-   ocupied, slot = find_slot(my_map, key, hash_value)
-   if ocupied:
-      entry = lt.get_element(my_map["table"], slot)
-      value = me.get_value(entry)
-      me.set_key(entry, None)
-      me.set_value(entry, None)
-      return value
-   else:
-      return None
-  
+    hash_value = mf.hash_value(my_map, key)
+    ocupied, pos = find_slot(my_map, key, hash_value)
+ 
+    if not ocupied:
+        return None
+ 
+    entry = lt.get_element(my_map["table"], pos)
+    return me.get_value(entry)
+   
 def size(my_map):
    """
    Retorna el número de entradas en el mapa.
