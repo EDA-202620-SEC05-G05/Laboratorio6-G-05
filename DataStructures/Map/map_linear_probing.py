@@ -131,3 +131,52 @@ def size(my_map):
    """
    return my_map["size"]
 
+def is_empty(my_map):
+    """
+    Indica si el mapa está vacío.
+
+    :param my_map: Mapa a validar.
+    :type my_map: :ref:`map<map>`
+
+    :return: True si el mapa no tiene entradas, False en caso contrario.
+    :rtype: bool
+    """
+    return my_map["size"] == 0
+
+
+def key_set(my_map):
+    """
+    Retorna una lista (array_list) con todas las llaves almacenadas en el mapa.
+
+    :param my_map: Mapa del cual se desean obtener las llaves.
+    :type my_map: :ref:`map<map>`
+
+    :return: Lista con las llaves del mapa.
+    :rtype: array_list
+    """
+    keys = lt.new_list()
+    for pos in range(my_map["capacity"]):
+        entry = lt.get_element(my_map["table"], pos)
+        key = me.get_key(entry)
+        if key is not None and key != mf.AVAILABLE:
+            lt.add_last(keys, key)
+    return keys
+
+
+def value_set(my_map):
+    """
+    Retorna una lista (array_list) con todos los valores almacenados en el mapa.
+
+    :param my_map: Mapa del cual se desean obtener los valores.
+    :type my_map: :ref:`map<map>`
+
+    :return: Lista con los valores del mapa.
+    :rtype: array_list
+    """
+    values = lt.new_list()
+    for pos in range(my_map["capacity"]):
+        entry = lt.get_element(my_map["table"], pos)
+        key = me.get_key(entry)
+        if key is not None and key != mf.AVAILABLE:
+            lt.add_last(values, me.get_value(entry))
+    return values
