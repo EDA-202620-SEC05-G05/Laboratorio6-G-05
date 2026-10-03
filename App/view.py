@@ -26,10 +26,10 @@
 
 import sys
 import App.logic as logic
-# TODO Realice la importación del mapa linear probing
-# TODO Realice la importación de ArrayList como estructura de datos auxiliar para sus requerimientos
-
-
+from DataStructures.Map import map_linear_probing as lp
+from DataStructures.List import array_list as al
+ 
+ 
 """
 La vista se encarga de la interacción con el usuario
 Presenta el menú de opciones y por cada selección
@@ -39,26 +39,25 @@ operación solicitada
 #  -------------------------------------------------------------
 # Funciones para la carga de datos
 #  -------------------------------------------------------------
-
+ 
 def new_logic():
     """
     Se crea una instancia del controlador
     """
     control = logic.new_logic()
     return control
-
-# TODO Incluir las mediciones de tiempo y uso de memoria en la ejecución de la consulta.
+ 
 def load_data(control):
     """
     Solicita a la controlador que cargue los datos
     """
-    books, authors, tags, book_tags = logic.load_data(control)
-    return books, authors, tags, book_tags
-
+    books, authors, tags, book_tags, tiempo_transcurrido, memoria_usada = logic.load_data(control)
+    return books, authors, tags, book_tags, tiempo_transcurrido, memoria_usada
+ 
 #  -------------------------------------------------------------
 # Funciones para la correcta impresión de los datos
 #  -------------------------------------------------------------
-
+ 
 def print_menu():
     """
     Menu de usuario
@@ -70,7 +69,7 @@ def print_menu():
     print("4- Consultar los libros según un género dado")
     print("5- Consultar los libros de un autor para un año de publicación especifico")
     print("8- Salir")
-
+ 
 def print_book_info(book):
     """
     Imprime los mejores libros solicitados
@@ -81,7 +80,7 @@ def print_book_info(book):
                     ' Work text reviews count : ' + book['work_text_reviews_count'])
     else:
         print('No se encontraron libros')
-
+ 
 def print_books_by_author(author, books_by_author):
     """
     Recorre la lista de libros de un autor, imprimiendo
@@ -96,7 +95,7 @@ def print_books_by_author(author, books_by_author):
                     ' Work text reviews count : ' + book['work_text_reviews_count'])
     else:
         print("No se encontró el autor")
-
+ 
 def print_books_by_tag(tag_name, books_by_tag):
     """
     Recorre la lista de libros asociados a un tag, imprimiendo
@@ -110,11 +109,11 @@ def print_books_by_tag(tag_name, books_by_tag):
                   book['isbn'] + ' Rating: ' + book['average_rating'] +
                     ' Work text reviews count : ' + book['work_text_reviews_count'])
     else:
-        print("No se encontró el tag") 
-        
+        print("No se encontró el tag")
+ 
 def print_books_by_auth_year(author, pub_year, books_by_author_year, tiempo_transcurrido, memoria_usada):
     """
-    Recorre la lista de libros de un autor para un año de publicación específico, 
+    Recorre la lista de libros de un autor para un año de publicación específico,
     imprimiendo la información solicitada junto con las métricas de rendimiento.
     """
     if books_by_author_year:
@@ -125,15 +124,15 @@ def print_books_by_auth_year(author, pub_year, books_by_author_year, tiempo_tran
                   f"Work text reviews count: {book['work_text_reviews_count']}")
     else:
         print("No se encontró el autor o el tag")
-    
+ 
     # Imprimir métricas de rendimiento
     print(f"\nTiempo transcurrido: {tiempo_transcurrido:.2f} ms")
     print(f"Memoria utilizada: {memoria_usada:.2f} kB\n")
-
-     
+ 
+ 
 exit_opt_lt = ("s", "S", "1", True, "true", "True", "si", "Si", "SI")
-
-
+ 
+ 
 # main del ejercicio
 def main():
     """
@@ -142,46 +141,50 @@ def main():
     # bandera para controlar el ciclo del menu
     working = True
     control = new_logic()
-
-
+ 
+ 
     # ciclo del menu
     while working:
         print_menu()
         inputs = input("Seleccione una opción para continuar\n")
-        # TODO agregar tiempo de ejecución y consumo de memoria
+        if not inputs.strip().isdigit():
+            print("Opción inválida, intente de nuevo.\n")
+            continue
         if int(inputs[0]) == 1:
             print("Cargando información de los archivos ....")
-            bk, at, tg, bktg = load_data(control)
+            bk, at, tg, bktg, tiempo_transcurrido, memoria_usada = load_data(control)
             print('Libros cargados: ' + str(bk))
             print('Autores cargados: ' + str(at))
             print('Géneros cargados: ' + str(tg))
             print('Asociación de Géneros a Libros cargados: ' +
                   str(bktg))
-
+            print(f"Tiempo transcurrido: {tiempo_transcurrido:.2f} ms")
+            print(f"Memoria utilizada: {memoria_usada:.2f} kB\n")
+ 
         elif int(inputs[0]) == 2:
             number = input("Ingrese el id del libro (good_read_book_id) que desea buscar: ")
             book = logic.get_book_info_by_book_id(control, number)
             print_book_info(book)
-
+ 
         elif int(inputs[0]) == 3:
             authorname = input("Nombre del autor a buscar: ")
             author, author_book_list = logic.get_books_by_author(control, authorname)
             print_books_by_author(author,author_book_list)
-
+ 
         elif int(inputs[0]) == 4:
             label = input("Etiqueta a buscar: ")
             book_list_by_tag = logic.get_books_by_tag(control, label)
             print_books_by_tag(label, book_list_by_tag)
-                 
+ 
         elif int(inputs[0]) == 5:
             author_name = input("Ingrese el nombre del autor que desea buscar:\n")
-            pub_year = input("Ingrese la fecha de publicación que desea buscar:\n") 
-
+            pub_year = input("Ingrese la fecha de publicación que desea buscar:\n")
+ 
             books_by_author_pub_year, tiempo_transcurrido, memoria_usada = logic.get_books_by_author_pub_year(control, author_name, pub_year)
-
+ 
             print_books_by_auth_year(author_name, pub_year, books_by_author_pub_year, tiempo_transcurrido, memoria_usada)
-
-            
+ 
+ 
         elif int(inputs[0]) == 8:
             # confirmar salida del programa
             end_str = "¿Desea salir del programa? (s/n): "
@@ -190,7 +193,8 @@ def main():
             if opt_usr in exit_opt_lt:
                 working = False
                 print("\nGracias por utilizar el programa.")
-
+ 
         else:
             continue
     sys.exit(0)
+ 
