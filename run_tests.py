@@ -1,9 +1,12 @@
 import os
+import sys
+import subprocess
 
 
 def execute_pytest_test(test_name):
-    os.system(f"pytest -v -k \"{test_name}\"")
-
+    cmd = [sys.executable, "-m", "pytest", "-v", "-k", test_name]
+    print(f"Executing: {' '.join(cmd)}")
+    subprocess.run(cmd)
 
 def print_test_options():
     print(" Bienvenido a las pruebas de EDA ".center(80, "="))
